@@ -1,0 +1,8 @@
+node_modules
+.env
+data/*.json
+!data/clients.json
+!data/staff.json
+!data/schedules.json
+.DS_Store
+npm-debug.log

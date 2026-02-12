@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carters Care Group - Care Management Platform</title>
+    <link rel="stylesheet" href="src/css/styles.css">
+    <link rel="icon" href="src/images/logo.png" type="image/png">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <img src="src/images/logo.png" alt="Carters Care Group" style="width: 300px; max-width: 90%;">
+            </div>
+            <p class="loading-subtitle">Care Management Platform</p>
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <p class="loading-text">Loading...</p>
+
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen" style="display: none;">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <div class="login-logo" style="width: 100%; height: auto; margin-bottom: 20px;">
+                        <img src="src/images/logo.png" alt="Carters Care Group Logo"
+                            style="width: 100%; max-width: 280px;">
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Care Management Platform</p>
+                </div>
+
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" placeholder="Enter your username" autocomplete="username"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password"
+                            autocomplete="current-password" required>
+                    </div>
+
+                    <div id="login-error" class="login-error" style="display: none;"></div>
+
+                    <div class="form-actions"
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <a href="#" onclick="showForgotPassword()"
+                            style="color: var(--primary); text-decoration: none; font-size: 14px;">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-button">Sign In</button>
+
+                    <div class="login-footer">
+                        <p class="login-hint" style="font-size: 12px; color: var(--text-secondary);">Secure NDIS & Aged
+                            Care Compliant Platform</p>
+                    </div>
+                </form>
+
+                <form id="forgot-password-form" onsubmit="handlePasswordReset(event)" style="display: none;">
+                    <div class="form-group">
+                        <label>Security Question</label>
+                        <p style="margin-bottom: 10px; color: var(--text-secondary);">What is your favorite color?</p>
+                        <input type="text" id="security-answer" placeholder="Answer" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="new-password" placeholder="New Password" required minlength="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirm-new-password" placeholder="Confirm Password" required
+                            minlength="8">
+                    </div>
+
+                    <div id="reset-message" style="display: none; margin-bottom: 15px; font-size: 14px;"></div>
+
+                    <button type="submit" class="login-button">Reset Password</button>
+                    <button type="button" class="btn-secondary" onclick="showLoginForm()"
+                        style="width: 100%; margin-top: 10px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);">Back
+                        to Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-container" class="app-container" style="display: none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon"></div>
+                    <div class="logo-text">
+                        <h1>Carters Care</h1>
+                        <p class="tagline">Care Management Platform</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-page="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-page="clients">
+                    <span class="icon">👥</span>
+                    <span>Clients</span>
+                </button>
+                <button class="nav-item" data-page="staff">
+                    <span class="icon">👔</span>
+                    <span>Staff</span>
+                </button>
+                <button class="nav-item" data-page="schedule">
+                    <span class="icon">📅</span>
+                    <span>Schedule</span>
+                </button>
+                <button class="nav-item" data-page="timesheets">
+                    <span class="icon">⏱️</span>
+                    <span>Timesheets</span>
+                </button>
+                <button class="nav-item" data-page="client-notes">
+                    <span class="icon">📝</span>
+                    <span>Client Notes</span>
+                </button>
+                <button class="nav-item" data-page="billing" id="billing-nav">
+                    <span class="icon">💰</span>
+                    <span>Billing</span>
+                    <span class="lock-icon" style="margin-left: auto; display: none;">🔒</span>
+                </button>
+                <button class="nav-item" data-page="reports">
+                    <span class="icon">📈</span>
+                    <span>Reports</span>
+                </button>
+                <button class="nav-item" data-page="incidents">
+                    <span class="icon">⚠️</span>
+                    <span>Incidents</span>
+                </button>
+                <button class="nav-item" data-page="compliance">
+                    <span class="icon">✓</span>
+                    <span>Compliance</span>
+                </button>
+                <button class="nav-item" data-page="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </button>
+            </nav>
+
+
+            <div class="sidebar-footer">
+                <p class="version">v1.1.0</p>
+                <p class="org-name">Carters Care Group</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="user-profile">
+                    <div class="notifications">
+                        <span class="icon">🔔</span>
+                        <span class="badge">3</span>
+                    </div>
+                    <button class="user-button" onclick="logout()">
+                        <span>Admin</span>
+                        <span class="icon">🚪</span>
+                    </button>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Dashboard Page -->
+                <section id="page-dashboard" class="page active">
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="icon">👥</div>
+                            <div class="info">
+                                <h3>Active Clients</h3>
+                                <p id="stat-clients">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">👔</div>
+                            <div class="info">
+                                <h3>Active Staff</h3>
+                                <p id="stat-staff">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">📅</div>
+                            <div class="info">
+                                <h3>Weekly Shifts</h3>
+                                <p id="stat-shifts">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">✓</div>
+                            <div class="info">
+                                <h3>Pending Approvals</h3>
+                                <p id="stat-pending">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="recent-activity">
+                            <h3>Recent Activity</h3>
+                            <ul id="activity-list">
+                                <li class="empty-state">No recent activity</li>
+                            </ul>
+                        </div>
+                        <div class="coming-up">
+                            <h3>Upcoming Shifts</h3>
+                            <ul id="upcoming-shifts">
+                                <li class="empty-state">No upcoming shifts</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Clients Page -->
+                <section id="page-clients" class="page">
+                    <div class="page-header">
+                        <h2>Client Management</h2>
+                        <button class="btn btn-primary" onclick="openClientModal()">+ Add Client</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Care Level</th>
+                                    <th>Contact</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clients-tbody">
+                                <tr class="empty-row">
+                                    <td colspan="5" class="empty-state">No clients added yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="client-modal" class="modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeClientModal()">&times;</span>
+                            <h2>Add Client</h2>
+                            <form id="client-form" onsubmit="saveClient(event)">
+                                <input type="text" placeholder="Full Name" id="client-name" required>
+                                <select id="client-level" required>
+                                    <option value="">Select Care Level</option>
+                                    <option value="basic">Basic Care</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced Support</option>
+                                </select>
+                                <input type="email" placeholder="Email (Optional)" id="client-email">
+                                <input type="tel" placeholder="Phone" id="client-phone" required>
+                                <textarea placeholder="Notes / Medical Info" id="client-notes"></textarea>
+                                <button type="submit" class="btn btn-primary">Save Client</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Staff Page -->
+                <section id="page-staff" class="page">
+                    <div class="page-header">
+                        <h2>Staff Management</h2>
+                        <button class="btn btn-primary" onclick="openStaffModal()">+ Add Staff Member</button>
+                    </div>
+                    <div class="staff-table-container">
+                        <table id="staff-table" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>System Role</th>
+                                    <th>Contact</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-tbody">
+                                <tr class="empty-row">
+                                    <td colspan="5" class="empty-state">No staff members added yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="staff-modal" class="modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeStaffModal()">&times;</span>
+                            <h2>Add Staff Member</h2>
+                            <form id="staff-form" onsubmit="saveStaff(event)">
+                                <h4 style="margin: 0 0 10px 0; color: var(--primary);">Personal Details</h4>
+                                <input type="text" placeholder="Full Name" id="staff-name" required>
+                                <input type="email" placeholder="Email (Login Username)" id="staff-email" required>
+                                <input type="tel" placeholder="Phone" id="staff-phone">
+
+                                <h4 style="margin: 15px 0 10px 0; color: var(--primary);">System Access</h4>
+                                <div style="display: grid; gap: 10px;">
+                                    <select id="staff-position" required>
+                                        <option value="">Select Job Position</option>
+                                        <option value="carer">Carer</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="supervisor">Supervisor</option>
+                                        <option value="nurse">Nurse</option>
+                                    </select>
+
+                                    <select id="staff-role" required>
+                                        <option value="" disabled selected>Select System Role</option>
+                                        <option value="worker">Support Worker (Limited Access)</option>
+                                        <option value="coordinator">Coordinator (Schedule & Clients)</option>
+                                        <option value="manager">Manager (Full Access except Settings)</option>
+                                        <option value="admin">Administrator (Full Access)</option>
+                                    </select>
+
+                                    <input type="password" placeholder="Set Password (Leave blank to keep unchanged)"
+                                        id="staff-password">
+                                </div>
+
+                                <h4 style="margin: 15px 0 10px 0; color: var(--primary);">Qualifications</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div>
+                                        <label style="font-size: 0.8rem;">WWCC Expiry</label>
+                                        <input type="date" id="staff-wwcc">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.8rem;">Police Check Expiry</label>
+                                        <input type="date" id="staff-police">
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <label style="font-size: 0.8rem;">First Aid / CPR Expiry</label>
+                                        <input type="date" id="staff-firstaid">
+                                    </div>
+                                </div>
+
+                                <h4 style="margin: 15px 0 5px 0; color: var(--danger);">Onboarding (Mandatory for Pay)
+                                </h4>
+                                <div style="background: #fff0f0; padding: 10px; border-radius: 6px; font-size: 0.9rem;">
+                                    <label style="display:blck; margin:3px 0;"><input type="checkbox"
+                                            id="staff-ndis-module"> NDIS Worker Orientation Module</label>
+                                    <label style="display:block; margin:3px 0;"><input type="checkbox" id="staff-coc">
+                                        Code of Conduct Signed</label>
+                                    <label style="display:block; margin:3px 0;"><input type="checkbox" id="staff-bank">
+                                        Bank Details & TFN Provided</label>
+                                </div>
+
+                                <label style="margin-top: 15px; display: flex; align-items: center; cursor: pointer;">
+                                    <input type="checkbox" id="staff-active" checked
+                                        style="width: auto; margin-right: 10px;">
+                                    Account Active
+                                </label>
+
+                                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Save Staff
+                                    Member</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Schedule Page -->
+                <section id="page-schedule" class="page">
+                    <div class="page-header">
+                        <h2>Shift Schedule</h2>
+                        <button class="btn btn-primary" onclick="openScheduleModal()">+ Create Shift</button>
+                    </div>
+                    <div class="schedule-container">
+                        <div class="schedule-view">
+                            <div id="schedule-calendar" class="schedule-calendar"></div>
+                        </div>
+                    </div>
+
+                    <div id="schedule-modal" class="modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeScheduleModal()">&times;</span>
+                            <h2>Create Shift</h2>
+                            <form id="schedule-form" onsubmit="saveSchedule(event)">
+                                <select id="schedule-staff" required>
+                                    <option value="">Select Staff Member</option>
+                                </select>
+                                <select id="schedule-client" required>
+                                    <option value="">Select Client</option>
+                                </select>
+                                <input type="date" id="schedule-date" required>
+                                <input type="time" id="schedule-start" required>
+                                <input type="time" id="schedule-end" required>
+                                <textarea placeholder="Notes" id="schedule-notes"></textarea>
+                                <button type="submit" class="btn btn-primary">Create Shift</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Timesheets Page -->
+                <section id="page-timesheets" class="page">
+                    <div class="page-header">
+                        <h2>Timesheets</h2>
+                        <p class="page-subtitle">Record and approve service delivery</p>
+                        <button class="btn btn-primary" onclick="openTimesheetModal()">+ Record Timesheet</button>
+                    </div>
+
+                    <div class="filter-bar">
+                        <select id="timesheet-filter" onchange="filterTimesheets()">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    <div class="timesheets-container">
+                        <div id="timesheets-list" class="timesheets-list"></div>
+                    </div>
+
+                    <div id="timesheet-modal" class="modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeTimesheetModal()">&times;</span>
+                            <h2>Record Timesheet</h2>
+                            <form id="timesheet-form" onsubmit="saveTimesheet(event)">
+                                <select id="timesheet-staff" required>
+                                    <option value="">Select Staff Member</option>
+                                </select>
+                                <select id="timesheet-client" required>
+                                    <option value="">Select Client</option>
+                                </select>
+                                <input type="date" id="timesheet-date" required>
+                                <input type="time" id="timesheet-start" placeholder="Start Time" required>
+                                <input type="time" id="timesheet-end" placeholder="End Time" required>
+                                <textarea placeholder="Service Description" id="timesheet-description"
+                                    required></textarea>
+                                <button type="submit" class="btn btn-primary">Submit Timesheet</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Client Notes Page -->
+                <section id="page-client-notes" class="page">
+                    <div class="page-header">
+                        <h2>Client Notes</h2>
+                        <p class="page-subtitle">Document client interactions and care observations</p>
+                        <button class="btn btn-primary" onclick="openClientNoteModal()">+ Add Note</button>
+                    </div>
+
+                    <div class="filter-bar">
+                        <select id="note-client-filter" onchange="filterClientNotes()">
+                            <option value="all">All Clients</option>
+                        </select>
+                        <select id="note-type-filter" onchange="filterClientNotes()">
+                            <option value="all">All Types</option>
+                            <option value="general">General</option>
+                            <option value="medical">Medical</option>
+                            <option value="behavioral">Behavioral</option>
+                            <option value="incident">Incident</option>
+                        </select>
+                    </div>
+
+                    <div class="notes-container">
+                        <div id="client-notes-list" class="notes-list"></div>
+                    </div>
+
+                    <div id="client-note-modal" class="modal" style="display:none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeClientNoteModal()">&times;</span>
+                            <h2>Add Client Note</h2>
+                            <form id="client-note-form" onsubmit="saveClientNote(event)">
+                                <select id="note-client" required>
+                                    <option value="">Select Client</option>
+                                </select>
+                                <select id="note-type" required>
+                                    <option value="">Select Note Type</option>
+                                    <option value="general">General Observation</option>
+                                    <option value="medical">Medical Note</option>
+                                    <option value="behavioral">Behavioral Note</option>
+                                    <option value="incident">Incident Report</option>
+                                </select>
+                                <input type="date" id="note-date" required>
+                                <textarea placeholder="Note Details" id="note-content" rows="6" required></textarea>
+                                <label><input type="checkbox" id="note-urgent"> Mark as Urgent</label>
+                                <button type="submit" class="btn btn-primary">Save Note</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Billing Page -->
+                <section id="page-billing" class="page">
+                    <div class="page-header">
+                        <h2>Billing & Invoices</h2>
+                        <p class="page-subtitle">Manage invoices, claims, and expenses</p>
+                    </div>
+
+                    <div id="billing-locked" class="compliance-warning" style="display:none;">
+                        <div class="warning-icon">🔒</div>
+                        <div class="warning-content">
+                            <h3>Billing Access Locked</h3>
+                            <p>You must complete the following before accessing billing:</p>
+                            <ul id="billing-requirements"></ul>
+                            <button class="btn btn-secondary" onclick="checkBillingCompliance()">Check
+                                Requirements</button>
+                        </div>
+                    </div>
+
+                    <div id="billing-content" class="billing-content">
+                        <div class="metrics-container">
+                            <div class="metric-card">
+                                <h3>Total Billed</h3>
+                                <div class="metric-value" id="total-billed">$0</div>
+                                <p class="metric-description">Current month</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Total Paid</h3>
+                                <div class="metric-value" id="total-paid" style="color: var(--success);">$0</div>
+                                <p class="metric-description">Current month</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Outstanding</h3>
+                                <div class="metric-value" id="total-outstanding" style="color: var(--danger);">$0</div>
+                                <p class="metric-description">Unpaid invoices</p>
+                            </div>
+                        </div>
+
+                        <div class="billing-actions">
+                            <div class="action-card">
+                                <h3>Generate Invoices</h3>
+                                <p>Create invoices for approved timesheets and expenses</p>
+                                <div class="invoice-form">
+                                    <input type="date" id="invoice-start" placeholder="Period Start">
+                                    <input type="date" id="invoice-end" placeholder="Period End">
+                                    <select id="invoice-type">
+                                        <option value="">Select Billing Type</option>
+                                        <option value="ndis-agency">NDIS Agency-Managed</option>
+                                        <option value="ndis-self">NDIS Self-Managed</option>
+                                        <option value="ndis-plan">NDIS Plan-Managed</option>
+                                        <option value="private">Private</option>
+                                        <option value="hcp">HCP</option>
+                                        <option value="dva">DVA</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="validateAndGenerateInvoices()">
+                                        <span class="icon">📊</span> Validate & Generate Invoices
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="invoices-tabs">
+                            <button class="tab-btn active" onclick="showInvoiceTab('invoices')">Invoices</button>
+                            <button class="tab-btn" onclick="showInvoiceTab('claims')">NDIS Claims</button>
+                            <button class="tab-btn" onclick="showInvoiceTab('expenses')">Expenses</button>
+                        </div>
+
+                        <div id="invoices-list" class="invoices-list"></div>
+                    </div>
+                </section>
+
+                <!-- Reports Page -->
+                <section id="page-reports" class="page">
+                    <div class="page-header">
+                        <h2>Reports</h2>
+                        <p class="page-subtitle">Generate insights and compliance reports</p>
+                    </div>
+
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <div class="report-icon">👥</div>
+                            <h3>Client Service Summary</h3>
+                            <p>Detailed service delivery report for clients</p>
+                            <button class="btn btn-secondary" onclick="generateReport('client-service')">Generate
+                                Report</button>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">💰</div>
+                            <h3>Funding Utilization</h3>
+                            <p>Budget tracking and utilization analysis</p>
+                            <button class="btn btn-secondary" onclick="generateReport('funding')">Generate
+                                Report</button>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">📊</div>
+                            <h3>Staff Productivity</h3>
+                            <p>Hours worked and billable percentage</p>
+                            <button class="btn btn-secondary" onclick="generateReport('staff-productivity')">Generate
+                                Report</button>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">📈</div>
+                            <h3>Service Delivery Overview</h3>
+                            <p>Total hours by service type and trends</p>
+                            <button class="btn btn-secondary" onclick="generateReport('service-delivery')">Generate
+                                Report</button>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">✅</div>
+                            <h3>Compliance Report</h3>
+                            <p>Scan for expiring qualifications and compliance issues</p>
+                            <button class="btn btn-primary" onclick="runComplianceCheck()">Run Compliance Check</button>
+                        </div>
+
+                        <div class="report-card">
+                            <div class="report-icon">📋</div>
+                            <h3>Custom Report</h3>
+                            <p>Build your own custom report</p>
+                            <button class="btn btn-secondary" onclick="openCustomReportBuilder()">Build Report</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Incidents Page -->
+                <section id="page-incidents" class="page">
+                    <div class="page-header">
+                        <h2>Incidents</h2>
+                        <p class="page-subtitle">Track and manage incidents and safety concerns (NDIS Compliant)</p>
+                        <button class="btn btn-primary" onclick="openIncidentModal()">+ Report Incident</button>
+                    </div>
+
+                    <div class="filter-bar">
+                        <select id="incident-status-filter" onchange="filterIncidents()">
+                            <option value="all">All Status</option>
+                            <option value="open">Open</option>
+                            <option value="investigating">Investigating</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <select id="incident-severity-filter" onchange="filterIncidents()">
+                            <option value="all">All Severity</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+
+                    <div class="incidents-container">
+                        <div id="incidents-list" class="incidents-list"></div>
+                    </div>
+
+                    <div id="incident-modal" class="modal" style="display:none;">
+                        <div class="modal-content modal-large">
+                            <span class="close" onclick="closeIncidentModal()">&times;</span>
+                            <h2>Report Incident</h2>
+                            <form id="incident-form" onsubmit="saveIncident(event)">
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label>Incident Date & Time</label>
+                                        <input type="datetime-local" id="incident-datetime" required>
+                                    </div>
+                                    <div class="form-col">
+                                        <label>Severity</label>
+                                        <select id="incident-severity" required>
+                                            <option value="">Select Severity</option>
+                                            <option value="low">Low</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="high">High</option>
+                                            <option value="critical">Critical</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <label>Incident Type</label>
+                                <select id="incident-type" required>
+                                    <option value="">Select Type</option>
+                                    <option value="injury">Injury</option>
+                                    <option value="medication">Medication Error</option>
+                                    <option value="fall">Fall</option>
+                                    <option value="behavioral">Behavioral</option>
+                                    <option value="property">Property Damage</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="abuse">Abuse / Neglect (Reportable)</option>
+                                    <option value="restrictive">Unauthorized Restrictive Practice (Reportable)</option>
+                                    <option value="other">Other</option>
+                                </select>
+
+                                <label>Client Involved</label>
+                                <select id="incident-client">
+                                    <option value="">Select Client (if applicable)</option>
+                                </select>
+
+                                <label>Staff Involved</label>
+                                <select id="incident-staff">
+                                    <option value="">Select Staff (if applicable)</option>
+                                </select>
+
+                                <label>Location</label>
+                                <input type="text" id="incident-location" placeholder="Where did this occur?" required>
+
+                                <label>Description (Include observed behaviors/events)</label>
+                                <textarea id="incident-description" rows="4"
+                                    placeholder="Detailed description of what happened" required></textarea>
+
+                                <label>Immediate Action Taken</label>
+                                <textarea id="incident-action" rows="3"
+                                    placeholder="What actions were taken immediately?" required></textarea>
+
+                                <div class="form-row" style="margin-top: 15px;">
+                                    <div class="form-col">
+                                        <label class="checkbox-label"><input type="checkbox" id="incident-emergency">
+                                            Emergency services contacted (000)</label>
+                                        <label class="checkbox-label"><input type="checkbox" id="incident-family">
+                                            Family/Guardian notified</label>
+                                    </div>
+                                    <div class="form-col">
+                                        <label class="checkbox-label"><input type="checkbox"
+                                                id="incident-ndis-reportable"> NDIS Reportable Incident?</label>
+                                        <label class="checkbox-label"><input type="checkbox" id="incident-wa-notified">
+                                            WA Dept of Communities Notified?</label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Submit Incident Report</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Compliance Page -->
+                <section id="page-compliance" class="page">
+                    <div class="page-header">
+                        <h2>Compliance & Checks</h2>
+                    </div>
+                    <div class="compliance-container">
+                        <div class="compliance-checklist">
+                            <h3>Staff Compliance</h3>
+                            <div id="compliance-list" class="checklist">
+                                <label class="checklist-item">
+                                    <input type="checkbox"> DBS Checks Complete
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox"> Health & Safety Training
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox"> Safeguarding Training
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox"> First Aid Certificate
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox"> Data Protection Training
+                                </label>
+                            </div>
+                            <button class="btn btn-primary" style="margin-top: 20px;">Generate Report</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Page -->
+                <section id="page-settings" class="page">
+                    <div class="page-header">
+                        <h2>Settings</h2>
+                    </div>
+                    <div class="settings-container">
+                        <div class="settings-section" id="settings-org">
+                            <h3>Organization</h3>
+                            <div class="setting-group">
+                                <label>Organization Name</label>
+                                <input type="text" value="Carters Care Group" id="org-name">
+                            </div>
+                            <div class="setting-group">
+                                <label>Contact Email</label>
+                                <input type="email" id="org-email">
+                            </div>
+                            <div class="setting-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="org-phone">
+                            </div>
+                            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                        </div>
+
+                        <div class="settings-section" id="settings-security">
+                            <h3>Security</h3>
+                            <div class="setting-group">
+                                <label>Change Password</label>
+                                <input type="password" id="setting-new-password" placeholder="New Password">
+                                <input type="password" id="setting-confirm-password" placeholder="Confirm New Password"
+                                    style="margin-top: 10px;">
+                            </div>
+                            <button class="btn btn-primary" onclick="handleSettingsPasswordChange()">Update
+                                Password</button>
+                        </div>
+
+                        <div class="settings-section" id="settings-data">
+                            <h3>Data Management</h3>
+                            <button class="btn btn-secondary" onclick="exportData()">📥 Export Data</button>
+                            <button class="btn btn-secondary" onclick="importData()">📤 Import Data</button>
+                            <button class="btn btn-danger" onclick="clearData()">🗑️ Clear All Data</button>
+                        </div>
+
+                        <div class="settings-section" id="settings-about">
+                            <h3>About</h3>
+                            <p><strong>Version:</strong> 1.2.0</p>
+                            <p><strong>Platform:</strong> Carters Care Management System</p>
+                            <p><strong>Last Updated:</strong> February 2026</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="src/js/auth.js"></script>
+    <script src="src/js/storage.js"></script>
+    <script src="src/js/toast.js"></script>
+    <script src="src/js/features.js"></script>
+    <script src="src/js/app.js"></script>
+</body>
+
+</html>

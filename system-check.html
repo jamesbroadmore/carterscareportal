@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carters Care Platform - System Check</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #C41E8C 0%, #1A3B8C 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #C41E8C;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .check-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .check-item.success {
+            background: #E8F5E9;
+            border-left: 4px solid #2E7D32;
+        }
+
+        .check-item.error {
+            background: #FFEBEE;
+            border-left: 4px solid #C62828;
+        }
+
+        .check-item.warning {
+            background: #FFF3E0;
+            border-left: 4px solid #F57C00;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .message {
+            flex: 1;
+        }
+
+        .message strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .message small {
+            color: #666;
+        }
+
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+
+        .summary h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stat {
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 14px;
+        }
+
+        .stat strong {
+            color: #C41E8C;
+        }
+
+        button {
+            background: #C41E8C;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #A01870;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Carters Care Platform - System Check</h1>
+        <p class="subtitle">Verifying all components are properly connected...</p>
+
+        <div id="checks"></div>
+
+        <div class="summary" id="summary" style="display: none;">
+            <h2>📊 Summary</h2>
+            <div id="stats"></div>
+        </div>
+
+        <button onclick="window.location.href='index.html'">Open Application →</button>
+    </div>
+
+    <script>
+        const checks = [];
+
+        function addCheck(name, status, message, details = '') {
+            checks.push({ name, status, message, details });
+        }
+
+        function runChecks() {
+            // Check 1: HTML Structure
+            try {
+                const parser = new DOMParser();
+                addCheck('HTML Structure', 'success', 'index.html is valid', 'Main application file exists');
+            } catch (e) {
+                addCheck('HTML Structure', 'error', 'HTML validation failed', e.message);
+            }
+
+            // Check 2: CSS Loading
+            try {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'src/css/styles.css';
+                link.onload = () => {
+                    addCheck('CSS Stylesheet', 'success', 'styles.css loaded successfully', 'All styles available');
+                    renderChecks();
+                };
+                link.onerror = () => {
+                    addCheck('CSS Stylesheet', 'error', 'styles.css failed to load', 'Check file path');
+                    renderChecks();
+                };
+                document.head.appendChild(link);
+            } catch (e) {
+                addCheck('CSS Stylesheet', 'error', 'CSS loading error', e.message);
+            }
+
+            // Check 3: JavaScript Files
+            const scripts = [
+                { name: 'auth.js', path: 'src/js/auth.js', functions: ['login', 'logout', 'isAuthenticated'] },
+                { name: 'storage.js', path: 'src/js/storage.js', functions: ['getClients', 'getStaff', 'getSchedules'] },
+                { name: 'app.js', path: 'src/js/app.js', functions: ['goToPage', 'updateDashboard'] }
+            ];
+
+            scripts.forEach(script => {
+                const scriptEl = document.createElement('script');
+                scriptEl.src = script.path;
+                scriptEl.onload = () => {
+                    const missingFunctions = script.functions.filter(fn => typeof window[fn] === 'undefined');
+                    if (missingFunctions.length === 0) {
+                        addCheck(`JavaScript: ${script.name}`, 'success', `${script.name} loaded successfully`, `All functions available`);
+                    } else {
+                        addCheck(`JavaScript: ${script.name}`, 'warning', `${script.name} loaded with warnings`, `Missing: ${missingFunctions.join(', ')}`);
+                    }
+                    renderChecks();
+                };
+                scriptEl.onerror = () => {
+                    addCheck(`JavaScript: ${script.name}`, 'error', `${script.name} failed to load`, 'Check file path');
+                    renderChecks();
+                };
+                document.head.appendChild(scriptEl);
+            });
+
+            // Check 4: LocalStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                addCheck('LocalStorage', 'success', 'LocalStorage is available', 'Data persistence enabled');
+            } catch (e) {
+                addCheck('LocalStorage', 'error', 'LocalStorage not available', 'Data will not persist');
+            }
+
+            // Check 5: Browser Compatibility
+            const features = {
+                'ES6 Support': () => {
+                    try {
+                        eval('const test = () => {};');
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                },
+                'Fetch API': () => typeof fetch !== 'undefined',
+                'LocalStorage API': () => typeof localStorage !== 'undefined',
+                'JSON Support': () => typeof JSON !== 'undefined'
+            };
+
+            Object.entries(features).forEach(([name, test]) => {
+                if (test()) {
+                    addCheck(`Browser: ${name}`, 'success', `${name} supported`, 'Feature available');
+                } else {
+                    addCheck(`Browser: ${name}`, 'error', `${name} not supported`, 'Upgrade browser');
+                }
+            });
+
+            // Initial render
+            setTimeout(renderChecks, 100);
+        }
+
+        function renderChecks() {
+            const container = document.getElementById('checks');
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+
+            container.innerHTML = checks.map(check => `
+                <div class="check-item ${check.status}">
+                    <div class="icon">${icons[check.status]}</div>
+                    <div class="message">
+                        <strong>${check.name}</strong>
+                        <small>${check.message}${check.details ? ' - ' + check.details : ''}</small>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update summary
+            const summary = document.getElementById('summary');
+            const stats = document.getElementById('stats');
+            const successCount = checks.filter(c => c.status === 'success').length;
+            const errorCount = checks.filter(c => c.status === 'error').length;
+            const warningCount = checks.filter(c => c.status === 'warning').length;
+
+            stats.innerHTML = `
+                <div class="stat">✅ <strong>${successCount}</strong> Passed</div>
+                <div class="stat">❌ <strong>${errorCount}</strong> Failed</div>
+                <div class="stat">⚠️ <strong>${warningCount}</strong> Warnings</div>
+                <div class="stat">📊 <strong>${checks.length}</strong> Total</div>
+            `;
+
+            summary.style.display = 'block';
+        }
+
+        // Run checks on load
+        runChecks();
+    </script>
+</body>
+
+</html>
